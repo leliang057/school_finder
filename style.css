@@ -1,0 +1,575 @@
+:root {
+    --ui-color: rgb(0, 0, 0);
+    --background-color: rgb(247, 246, 246);
+}
+
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 30px;
+    margin: 0;
+    overflow: hidden;
+
+    background-color: var(--background-color);
+    color: var(--ui-color);
+}
+
+/* Color theme buttons */
+
+.color-themes {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    z-index: 3000;
+}
+
+.theme-button {
+    width: 32px;
+    height: 32px;
+
+    padding: 0;
+
+    border: 2px solid white;
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    font-size: 0;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.theme-button:hover {
+    transform: scale(1.1);
+}
+
+.theme-button.active {
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+
+/* Individual theme button colours */
+
+.theme-button[data-theme="light"] {
+    background-color: rgb(240, 240, 240);
+}
+
+.theme-button[data-theme="ocean"] {
+    background-color: rgb(192, 234, 244);
+}
+
+.theme-button[data-theme="dark"] {
+    background-color: rgb(80, 80, 80);
+}
+
+.theme-button[data-theme="warm"] {
+    background-color: rgb(244, 210, 170);
+}
+
+/* Search area */
+
+.top-ui {
+    position: relative;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+
+.search-area {
+    margin-top: 20px;
+}
+
+input {
+    padding: 10px;
+    width: 200px;
+
+    border: none;
+    border-radius: 6px;
+}
+
+#searchButton {
+    padding: 10px 15px;
+    margin-left: 5px;
+
+    border: none;
+    border-radius: 6px;
+
+    cursor: pointer;
+}
+
+/* Search suggestions */
+.search-box {
+    position: relative;
+    display: inline-block;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+
+    width: 100%;
+
+    background-color: white;
+    color: rgb(16, 47, 84);
+
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+
+    z-index: 2000;
+
+    display: none;
+
+    text-align: left;
+}
+
+.suggestion {
+    padding: 10px 14px;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.15s ease;
+}
+
+.suggestion:hover {
+    background-color: rgb(192, 234, 244);
+}
+
+.suggestion-room {
+    font-weight: bold;
+}
+
+.suggestion-name {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+/* Search result */
+
+#result {
+    min-height: 20px;
+}
+
+
+/* Floor buttons */
+
+.floor-buttons {
+    position: fixed;
+    left: 20px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    z-index: 1000;
+
+    background: transparent;
+    pointer-events: none;
+}
+
+.floor-button {
+    width: 45px;
+    height: 45px;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: white;
+    color: rgb(16, 47, 84);
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+    pointer-events: auto;
+
+    transition:
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.25s ease;
+}
+
+.floor-button:hover {
+    transform: scale(1.08);
+}
+
+.floor-button.active {
+    background-color: rgb(192, 234, 244);
+    color: rgb(16, 47, 84);
+
+    box-shadow: 0 0 12px rgba(192, 234, 244, 0.5);
+}
+
+
+/* Map */
+
+#mapContainer {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    overflow: hidden;
+
+    cursor: grab;
+
+    z-index: 0;
+
+    background: transparent;
+}
+
+#mapContainer.dragging {
+    cursor: grabbing;
+}
+
+#mapContainer svg {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    max-width: none;
+
+    transform-origin: center center;
+
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#mapContainer svg text {
+    fill: var(--ui-color) !important;
+}
+
+#mapContainer svg path,
+#mapContainer svg rect,
+#mapContainer svg polygon {
+    stroke: var(--ui-color) !important;
+}
+
+/* Doors */
+#mapContainer svg [id*="door" i],
+#mapContainer svg [class*="door" i],
+#mapContainer svg g[id*="door" i] path,
+#mapContainer svg g[id*="door" i] line,
+#mapContainer svg g[id*="door" i] rect,
+#mapContainer svg g[id*="door" i] polygon {
+    fill: var(--background-color) !important;
+    stroke: var(--background-color) !important;
+}
+
+/* Icons */
+#mapContainer svg g[id*="icon"] path,
+#mapContainer svg g[id*="icon"] line,
+#mapContainer svg g[id*="icon"] rect,
+#mapContainer svg g[id*="icon"] circle,
+#mapContainer svg g[id*="icon"] polygon,
+#mapContainer svg g[id*="icon"] polyline {
+    fill: var(--ui-color) !important;
+    stroke: var(--ui-color) !important;
+}
+
+/* Highlighted room */
+
+#mapContainer svg path.room-highlight,
+#mapContainer svg rect.room-highlight,
+#mapContainer svg polygon.room-highlight {
+    stroke: rgb(136, 229, 252) !important;
+
+    filter:
+        drop-shadow(0 0 6px rgb(192, 234, 244))
+        drop-shadow(0 0 12px rgb(192, 234, 244));
+
+    transition:
+        stroke 0.25s ease,
+        filter 0.25s ease;
+}
+
+/* Make ONLY the highlight overlay thicker */
+#highlightOverlay .room-highlight:not(.icon-highlight) {
+    fill: none !important;
+    stroke: rgb(136, 229, 252) !important;
+    stroke-width: 4px !important;
+
+    stroke-linejoin: round;
+    stroke-linecap: round;
+
+    filter:
+        drop-shadow(0 0 4px rgb(192, 234, 244))
+        drop-shadow(0 0 8px rgb(192, 234, 244));
+}
+
+.icon-highlight {
+    fill: rgb(136, 229, 252) !important;
+    stroke: rgb(136, 229, 252) !important;
+
+    filter:
+        drop-shadow(0 0 6px rgb(192, 234, 244))
+        drop-shadow(0 0 12px rgb(192, 234, 244));
+}
+/* =========================
+   MAP CONTROLS
+========================= */
+
+.map-controls {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    z-index: 1000;
+
+    background: transparent;
+    pointer-events: none;
+}
+
+.map-controls button {
+    width: 45px;
+    height: 45px;
+
+    padding: 0;
+    margin: 0;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: white;
+    color: rgb(16, 47, 84);
+
+    font-size: 24px;
+    font-weight: bold;
+
+    cursor: pointer;
+    pointer-events: auto;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.map-controls button:hover {
+    transform: scale(1.08);
+}
+
+.map-controls button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+#mapContainer {
+    touch-action: none;
+}
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 20px 12px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin: 10px 0 4px;
+    }
+
+    .top-ui > p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .search-suggestions {
+    z-index: 5000;
+    }   
+
+    .search-area {
+        margin-top: 14px;
+    }
+
+    .search-box {
+        display: flex;
+        width: 100%;
+        max-width: 420px;
+    }
+
+    input {
+        flex: 1;
+        width: auto;
+        min-width: 0;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    #searchButton {
+        padding: 12px 14px;
+        margin-left: 6px;
+        font-size: 14px;
+    }
+
+    .color-themes {
+        top: 12px;
+        right: 12px;
+        gap: 6px;
+    }
+
+    .theme-button {
+        width: 28px;
+        height: 28px;
+    }
+
+    .floor-buttons {
+        left: 12px;
+    }
+
+    .floor-button {
+        width: 42px;
+        height: 42px;
+        font-size: 16px;
+    }
+
+    .map-controls {
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .map-controls button {
+        width: 42px;
+        height: 42px;
+    }
+
+    #result {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .top-ui {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 55px;
+        z-index: 3000;
+    }
+
+    .top-ui.mobile-loading {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background-color: var(--background-color);
+
+        z-index: 5000;
+    }
+
+    .top-ui.mobile-loading h1 {
+        margin: 0;
+        font-size: 32px;
+    }
+
+    .top-ui.mobile-loading > p,
+    .top-ui.mobile-loading .search-area,
+    .top-ui.mobile-loading #result {
+        display: none;
+    }
+
+    .top-ui:not(.mobile-loading) h1,
+    .top-ui:not(.mobile-loading) > p:first-of-type {
+        display: none;
+    }
+
+    .top-ui:not(.mobile-loading) .search-area {
+        margin-top: 0;
+    }
+
+}
+
+#mobileCompass {
+    display: none;
+}
+
+@media (max-width: 600px) {
+
+    #mobileCompass {
+        position: fixed;
+        left: 14px;
+        bottom: 14px;
+
+        width: 52px;
+        height: 52px;
+
+        border-radius: 50%;
+
+        background: rgba(255, 255, 255, 0.9);
+
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+
+        z-index: 3000;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        cursor: pointer;
+
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .compass-n {
+        position: absolute;
+        top: 4px;
+
+        font-size: 10px;
+        font-weight: bold;
+
+        color: var(--ui-color);
+    }
+
+    .compass-arrow {
+        font-size: 20px;
+        color: var(--ui-color);
+
+        transform-origin: center;
+        transition: transform 0.15s ease;
+    }
+
+    .compass-label {
+        position: absolute;
+        bottom: 3px;
+
+        font-size: 7px;
+        color: var(--ui-color);
+    }
+}

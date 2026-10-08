@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>School Finder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Color theme buttons -->
+    <div class="color-themes">
+        <button class="theme-button active" data-theme="light">●</button>
+        <button class="theme-button" data-theme="ocean">●</button>
+        <button class="theme-button" data-theme="warm">●</button>
+        <button class="theme-button" data-theme="dark">●</button>
+    </div>
+
+    <!-- Top UI ( Title + Search Box ) -->
+    <div class="top-ui mobile-loading">
+
+        <!-- Title -->
+        <h1>NAIS Map</h1>
+        <p>Find your classroom</p>
+
+        <!-- Search -->
+        <div class="search-area">
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="roomSearch"
+                    placeholder="Enter room number"
+                    autocomplete="off"
+                >
+
+                <button id="searchButton">Search</button>
+
+                <div id="searchSuggestions" class="search-suggestions"></div>
+
+            </div>
+        </div>
+
+        <p id="result"></p>
+
+    </div>
+    
+    <!-- Floor buttons -->
+    <div class="floor-buttons">
+
+        <!-- Ground is active by default -->
+        <button class="floor-button active" data-floor="ground">G</button>
+
+        <button class="floor-button" data-floor="first">1</button>
+
+        <button class="floor-button" data-floor="second">2</button>
+
+    </div>
+
+
+    <!-- zoom buttons -->
+    <div class="map-controls">
+        <button id="zoomIn">+</button>
+        <button id="zoomOut">−</button>
+    </div>
+
+    <!-- mobile compass -->
+    <div id="mobileCompass">
+        <div class="compass-n">N</div>
+        <div class="compass-arrow">▲</div>
+        <div class="compass-label">Tap</div>
+    </div>
+
+    <!-- Run Map -->
+    <div id="mapContainer">
+        <p>Loading map...</p>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
