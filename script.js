@@ -1871,81 +1871,105 @@ const mobileCompass =
 const compassArrow =
     document.querySelector(".compass-arrow");
 
+const compassLabel =
+    document.querySelector(".compass-label");
+
+let compassListening = false;
+let compassHasHeading = false;
+
+
 function updateCompass(event) {
 
     let heading = null;
 
-    // iPhone / iPad
+    // iPhone / iPad compass heading
     if (
         typeof event.webkitCompassHeading === "number" &&
-        !isNaN(event.webkitCompassHeading)
+        Number.isFinite(event.webkitCompassHeading)
     ) {
         heading = event.webkitCompassHeading;
     }
 
-    // Other devices
+    // Devices reporting absolute orientation
     else if (
-        event.absolute &&
-        typeof event.alpha === "number"
+        event.absolute === true &&
+        typeof event.alpha === "number" &&
+        Number.isFinite(event.alpha)
     ) {
-        heading = 360 - event.alpha;
+        heading = (360 - event.alpha + 360) % 360;
     }
 
-    if (heading === null) {
-        return;
-    }
+    // No reliable compass heading received
+    if (heading === null) return;
 
+    compassHasHeading = true;
+
+    // Rotate the arrow to show facing direction
     compassArrow.style.transform =
         `rotate(${heading}deg)`;
 
-    document.querySelector(".compass-label").textContent =
+    compassLabel.textContent =
         `${Math.round(heading)}°`;
 }
 
 
-function startCompass() {
+async function startCompass() {
 
-    if (
-        typeof DeviceOrientationEvent !== "undefined" &&
-        typeof DeviceOrientationEvent.requestPermission === "function"
-    ) {
+    // HTTPS is required
+    if (!window.isSecureContext) {
+        compassLabel.textContent = "HTTPS";
+        return;
+    }
 
-        DeviceOrientationEvent.requestPermission(true)
-            .then(function(permission) {
+    // Check browser support
+    if (typeof DeviceOrientationEvent === "undefined") {
+        compassLabel.textContent = "N/A";
+        return;
+    }
 
-                if (permission === "granted") {
+    if (compassListening) return;
 
-                    window.addEventListener(
-                        "deviceorientationabsolute",
-                        updateCompass
-                    );
+    try {
 
-                    window.addEventListener(
-                        "deviceorientation",
-                        updateCompass
-                    );
+        // Request sensor permission where required
+        if (
+            typeof DeviceOrientationEvent.requestPermission
+            === "function"
+        ) {
 
-                    document.querySelector(".compass-label").textContent =
-                        "0°";
-                }
+            const permission =
+                await DeviceOrientationEvent.requestPermission(true);
 
-            })
-            .catch(function(error) {
-                console.error("Compass permission error:", error);
-            });
+            if (permission !== "granted") {
+                compassLabel.textContent = "Denied";
+                return;
+            }
+        }
 
-    } else {
-
-        window.addEventListener(
-            "deviceorientationabsolute",
-            updateCompass
-        );
+        compassListening = true;
+        compassLabel.textContent = "Move";
 
         window.addEventListener(
             "deviceorientation",
             updateCompass
         );
 
+        window.addEventListener(
+            "deviceorientationabsolute",
+            updateCompass
+        );
+
+        // Show a diagnostic if no heading arrives
+        setTimeout(function () {
+            if (!compassHasHeading) {
+                compassLabel.textContent = "No signal";
+            }
+        }, 3000);
+
+    } catch (error) {
+
+        console.error("Compass error:", error);
+        compassLabel.textContent = "Error";
     }
 }
 
