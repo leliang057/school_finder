@@ -1915,12 +1915,22 @@ function updateCompass(event) {
 
 async function startCompass() {
 
-    // HTTPS is required
     if (!window.isSecureContext) {
-        compassLabel.textContent = "HTTPS";
+        const inFrame = window.self !== window.top;
+
+        compassLabel.textContent =
+            location.protocol !== "https:" ? "HTTP" :
+            inFrame ? "FRAME" : "CTX ERR";
+
+        console.log("Compass debug:", {
+            url: location.href,
+            protocol: location.protocol,
+            secureContext: window.isSecureContext,
+            inFrame: inFrame
+        });
+
         return;
     }
-
     // Check browser support
     if (typeof DeviceOrientationEvent === "undefined") {
         compassLabel.textContent = "N/A";
